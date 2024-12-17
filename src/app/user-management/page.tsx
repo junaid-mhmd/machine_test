@@ -30,9 +30,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { User } from "@/utils/types";
 import { applyFilters, getAge } from "@/utils/common";
-import { deleteUser } from "@/redux/slices/usersSlice";
-import { DeleteOutline, EditSharp } from "@mui/icons-material";
+import { deleteSelectedUsers, deleteUser } from "@/redux/slices/usersSlice";
+import { Delete, DeleteOutline, EditSharp } from "@mui/icons-material";
 import FilterComponent from "./components/tableFilter";
+import { toast } from "react-toastify";
 
 type Props = {};
 
@@ -156,13 +157,27 @@ const UserManagement = (props: Props) => {
 						>
 							<TableRow>
 								<TableCell padding="checkbox">
-									<Checkbox
-										indeterminate={
-											selected.length > 0 && selected.length < rows.length
-										}
-										checked={isAllSelected}
-										onChange={handleSelectAll}
-									/>
+									<Stack display="flex" flexDirection="row" alignItems="center">
+										<Checkbox
+											indeterminate={
+												selected.length > 0 && selected.length < rows.length
+											}
+											checked={isAllSelected}
+											onChange={handleSelectAll}
+										/>
+										{selected.length > 0 && (
+											<Delete
+												color="action"
+												onClick={() => {
+													dispatch(deleteSelectedUsers(selected));
+													toast.success(
+														`${selected.length} users deleted successfully.`
+													);
+												}}
+												fontSize="small"
+											/>
+										)}
+									</Stack>
 								</TableCell>
 								<TableCell>User</TableCell>
 								<TableCell>Age</TableCell>
@@ -275,6 +290,7 @@ const UserManagement = (props: Props) => {
 														onClick={() => {
 															dispatch(deleteUser(row.id));
 															handleClose();
+															toast.success("User deleted successfully");
 														}}
 													>
 														<ListItemIcon>

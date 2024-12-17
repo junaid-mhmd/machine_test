@@ -20,23 +20,44 @@ import {
 	TextField,
 	Typography,
 } from "@mui/material";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 
 type Props = {};
 
-const leagues = ["Laliga", "League 1", "League 2"];
-const positions = ["Forward", "Backward", "Midfielder"];
-const statuses = ["Active", "Retired"];
+const leagues = [
+	"Laliga",
+	"League 1",
+	"League 2",
+	"MLS",
+	"Premier League",
+	"Bundesliga",
+	"Serie A",
+	"Champions League",
+];
+
+const positions = [
+	"Forward",
+	"Midfielder",
+	"Defender",
+	"Goalkeeper",
+	"Striker",
+	"Winger",
+	"Attacking Midfielder",
+	"Defensive Midfielder",
+];
+
+const statuses = ["Active", "Retired", "Suspended", "Injured"];
 
 const CreateUser = (props: Props) => {
 	const dispatch = useDispatch();
 	const router = useRouter();
-	const params = useSearchParams();
 	const users = useSelector((state: RootState) => state.users);
+	const [userId, setUserId] = useState<any>(null);
 
 	const {
 		control,
@@ -55,15 +76,25 @@ const CreateUser = (props: Props) => {
 	});
 
 	useEffect(() => {
-		if (params.get("id")) {
-			const data: any = users?.find((i) => i.id == params.get("id"));
+		const params = new URLSearchParams(window.location.search);
+		const id = params.get("id");
+
+		if (id) {
+			setUserId(id);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (userId) {
+			const data: any = users?.find((i) => i.id == userId);
 			reset(data);
 		}
-	}, [params]);
+	}, [userId]);
 
 	const onSubmit = (data: any) => {
-		if (params.get("id")) {
-			dispatch(updateUser({ ...data, id: params.get("id") }));
+		if (userId) {
+			dispatch(updateUser({ ...data, id: userId }));
+			toast.success("User updated successfully");
 		} else {
 			dispatch(
 				addUser({
@@ -71,6 +102,7 @@ const CreateUser = (props: Props) => {
 					id: uuidv4(),
 				})
 			);
+			toast.success("User created successfully");
 		}
 		router.push("/user-management");
 	};
@@ -85,8 +117,8 @@ const CreateUser = (props: Props) => {
 				User Information Form
 			</Typography>
 			<form onSubmit={handleSubmit(onSubmit)} noValidate>
-				<Grid2 container spacing={4}>
-					<Grid2 size={6}>
+				<Grid2 container spacing={4} maxWidth={"1000px"}>
+					<Grid2 size={{ xl: 6, lg: 6, md: 12, sm: 12, xs: 12 }}>
 						<Controller
 							name="name"
 							control={control}
@@ -115,7 +147,7 @@ const CreateUser = (props: Props) => {
 						/>
 					</Grid2>
 
-					<Grid2 size={6}>
+					<Grid2 size={{ xl: 6, lg: 6, md: 12, sm: 12, xs: 12 }}>
 						<Controller
 							name="dob"
 							control={control}
@@ -124,7 +156,7 @@ const CreateUser = (props: Props) => {
 								validate: (value) => {
 									const selectedDate = new Date(value);
 									if (selectedDate > minValidDate) {
-										return "Date of Birth must be at least 5 years ago";
+										return "Date of Birth must be at least 1 years ago";
 									}
 									return true;
 								},
@@ -154,7 +186,7 @@ const CreateUser = (props: Props) => {
 							)}
 						/>
 					</Grid2>
-					<Grid2 size={6}>
+					<Grid2 size={{ xl: 6, lg: 6, md: 12, sm: 12, xs: 12 }}>
 						<Controller
 							name="leaguesPlayed"
 							rules={{ required: "Please select at least one league" }}
@@ -188,7 +220,7 @@ const CreateUser = (props: Props) => {
 							)}
 						/>
 					</Grid2>
-					<Grid2 size={6}>
+					<Grid2 size={{ xl: 6, lg: 6, md: 12, sm: 12, xs: 12 }}>
 						<Controller
 							name="height"
 							control={control}
@@ -233,7 +265,7 @@ const CreateUser = (props: Props) => {
 							)}
 						/>
 					</Grid2>
-					<Grid2 size={6}>
+					<Grid2 size={{ xl: 6, lg: 6, md: 12, sm: 12, xs: 12 }}>
 						<Controller
 							name="status"
 							control={control}
@@ -273,7 +305,7 @@ const CreateUser = (props: Props) => {
 							)}
 						/>
 					</Grid2>
-					<Grid2 size={6}>
+					<Grid2 size={{ xl: 6, lg: 6, md: 12, sm: 12, xs: 12 }}>
 						<Controller
 							name="position"
 							control={control}
@@ -315,7 +347,7 @@ const CreateUser = (props: Props) => {
 
 					<Grid2 size={12}>
 						<Button type="submit" variant="contained" color="primary">
-							{params.get("id") ? "Update" : "Submit"}
+							{userId ? "Update" : "Submit"}
 						</Button>
 					</Grid2>
 				</Grid2>

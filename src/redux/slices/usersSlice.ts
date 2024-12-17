@@ -4,12 +4,21 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState: User[] = [
 	{
 		name: "junaid v",
-		dob: "2024-11-25",
+		dob: "1997-08-31",
 		leaguesPlayed: ["Laliga"],
+		status: "Retired",
+		position: "Forward",
+		height: "1.5",
+		id: "d994d1f1-39d3-446f-86b5-939b6bbb4dc4",
+	},
+	{
+		name: "Lionel Messi",
+		dob: "1987-06-24",
+		leaguesPlayed: ["MLS", "Laliga", "League 1"],
 		status: "Active",
 		position: "Forward",
-		height: "2.3",
-		id: "d994d1f1-39d3-446f-86b5-939b6bbb4dc4",
+		height: "1.69",
+		id: "d994d1f1-39d3-446f-86b5-939b6bbb454",
 	},
 ];
 
@@ -24,6 +33,10 @@ export const usersSlice = createSlice({
 		deleteUser(state, action: PayloadAction<string>) {
 			return state.filter((user) => user.id !== action.payload);
 		},
+		// Delete selected users by ID
+		deleteSelectedUsers(state, action: PayloadAction<string[]>) {
+			return state.filter((user) => !action.payload.includes(user.id));
+		},
 		// Update a user by ID
 		updateUser(state, action: PayloadAction<User>) {
 			const index = state.findIndex((user) => user.id === action.payload.id);
@@ -36,5 +49,5 @@ export const usersSlice = createSlice({
 
 const { actions, reducer } = usersSlice;
 
-export const { addUser, deleteUser, updateUser } = actions;
+export const { addUser, deleteUser, updateUser, deleteSelectedUsers } = actions;
 export default reducer;

@@ -9,6 +9,8 @@ import {
 	ListItemIcon,
 	ListItemText,
 	Typography,
+	useMediaQuery,
+	useTheme,
 } from "@mui/material";
 import React, { useState } from "react";
 import StarIcon from "@mui/icons-material/Star";
@@ -25,6 +27,7 @@ import {
 	Settings,
 } from "@mui/icons-material";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 
 type Props = {};
 
@@ -35,6 +38,9 @@ const SideDrawer = (props: Props) => {
 	const [open, setOpen] = useState<number>(1);
 	const router = useRouter();
 	const pathname = usePathname();
+
+	const theme = useTheme();
+	const matches = useMediaQuery(theme.breakpoints.down("lg"));
 
 	const handleClick = (key: number) => {
 		if (open == key) {
@@ -73,7 +79,7 @@ const SideDrawer = (props: Props) => {
 
 	return (
 		<Drawer
-			variant="persistent"
+			variant={matches ? "temporary" : "persistent"}
 			open={isOpen}
 			onClose={() => dispatch(toggleMenu())}
 			hideBackdrop
@@ -83,10 +89,8 @@ const SideDrawer = (props: Props) => {
 				[`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
 			}}
 		>
-			<Box sx={{ p: 2 }}>
-				<Typography variant="h6" noWrap>
-					Logoipsum
-				</Typography>
+			<Box sx={{ p: 2 }} marginTop={"65px"}>
+				<Image src={"/assets/logo.png"} width={230} height={40} alt="logo" />
 			</Box>
 			<List sx={{ width: "100%", bgcolor: "background.paper" }} component="nav">
 				{navData.map((item: any, index: any) => (

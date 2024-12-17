@@ -5,6 +5,7 @@ import SideDrawer, { drawerWidth } from "./sideDrawer";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { ToastContainer } from "react-toastify";
 
 type Props = {
 	children: ReactNode;
@@ -15,6 +16,7 @@ const Layout = ({ children }: Props) => {
 
 	return (
 		<Box sx={{ display: "flex" }}>
+			<ToastContainer />
 			<Header />
 			{isOpen && <SideDrawer />}
 			<Box
