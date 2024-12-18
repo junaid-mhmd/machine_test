@@ -14,7 +14,7 @@ const initialState: User[] = [
 	{
 		name: "Lionel Messi",
 		dob: "1987-06-24",
-		leaguesPlayed: ["MLS", "Laliga", "League 1"],
+		leaguesPlayed: ["MLS", "Laliga", "League 1", "Champions League"],
 		status: "Active",
 		position: "Forward",
 		height: "1.69",
@@ -26,8 +26,9 @@ export const usersSlice = createSlice({
 	name: "users",
 	initialState: initialState,
 	reducers: {
+		// Add new user
 		addUser(state, action: PayloadAction<User>) {
-			state.push(action.payload);
+			state.unshift(action.payload);
 		},
 		// Delete a user by ID
 		deleteUser(state, action: PayloadAction<string>) {

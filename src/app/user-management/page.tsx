@@ -34,6 +34,7 @@ import { deleteSelectedUsers, deleteUser } from "@/redux/slices/usersSlice";
 import { Delete, DeleteOutline, EditSharp } from "@mui/icons-material";
 import FilterComponent from "./components/tableFilter";
 import { toast } from "react-toastify";
+import LeagueTags from "./components/leagueTags";
 
 type Props = {};
 
@@ -46,6 +47,7 @@ const UserManagement = (props: Props) => {
 
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
+	const [selectedUser, setSelectedUser] = useState(null);
 
 	const dispatch = useDispatch();
 	const router = useRouter();
@@ -173,6 +175,7 @@ const UserManagement = (props: Props) => {
 													toast.success(
 														`${selected.length} users deleted successfully.`
 													);
+													setSelected([]);
 												}}
 												fontSize="small"
 											/>
@@ -181,7 +184,7 @@ const UserManagement = (props: Props) => {
 								</TableCell>
 								<TableCell>User</TableCell>
 								<TableCell>Age</TableCell>
-								<TableCell>Leagues Played</TableCell>
+								<TableCell width={100}>Leagues Played</TableCell>
 								<TableCell>Status</TableCell>
 								<TableCell>Height</TableCell>
 								<TableCell>Position</TableCell>
@@ -214,94 +217,84 @@ const UserManagement = (props: Props) => {
 							<TableBody>
 								{filteredRows
 									.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-									.map((row: any) => (
-										<TableRow
-											key={row.id}
-											hover
-											selected={selected.includes(row.id)}
-										>
-											<TableCell padding="checkbox">
-												<Checkbox
-													checked={selected.includes(row.id)}
-													onChange={() => handleSelect(row.id)}
-												/>
-											</TableCell>
-											<TableCell>{row.name}</TableCell>
-											<TableCell>{row.age}</TableCell>
-											<TableCell>
-												{row.leagues
-													.slice(0, 3)
-													.map((league: any, index: any) => (
-														<Chip
-															key={index}
-															label={league}
-															size="small"
-															variant="outlined"
-															sx={{ marginRight: 0.5, marginBottom: 0.5 }}
-														/>
-													))}
-												{row.leagues.length > 3 && (
-													<Chip
-														variant="outlined"
-														label="More.."
-														size="small"
+									.map((row: any) => {
+										return (
+											<TableRow
+												key={row.id}
+												hover
+												selected={selected.includes(row.id)}
+											>
+												<TableCell padding="checkbox">
+													<Checkbox
+														checked={selected.includes(row.id)}
+														onChange={() => handleSelect(row.id)}
 													/>
-												)}
-											</TableCell>
-											<TableCell>
-												<Chip
-													label={row.status}
-													sx={{
-														backgroundColor:
-															row.status === "Active" ? "#72CD2C" : "#EF6C00",
-														color: "#ffffff",
-													}}
-												/>
-											</TableCell>
-											<TableCell>{row.height}</TableCell>
-											<TableCell>{row.position}</TableCell>
-											<TableCell align="right">
-												<IconButton onClick={handleClick}>
-													<GridMoreVertIcon />
-												</IconButton>
-												<Menu
-													id="basic-menu"
-													anchorEl={anchorEl}
-													open={open}
-													onClose={handleClose}
-													MenuListProps={{
-														"aria-labelledby": "basic-button",
-													}}
-												>
-													<MenuItem
-														onClick={() => {
-															router.push(
-																`/user-management/create?id=${row.id}`
-															);
-															handleClose();
+												</TableCell>
+												<TableCell>{row.name}</TableCell>
+												<TableCell>{row.age}</TableCell>
+												<TableCell width={300}>
+													<LeagueTags data={row} />
+												</TableCell>
+												<TableCell>
+													<Chip
+														label={row.status}
+														sx={{
+															backgroundColor:
+																row.status === "Active" ? "#72CD2C" : "#EF6C00",
+															color: "#ffffff",
+														}}
+													/>
+												</TableCell>
+												<TableCell>{row.height}</TableCell>
+												<TableCell>{row.position}</TableCell>
+												<TableCell align="right">
+													<IconButton
+														onClick={(e) => {
+															handleClick(e);
+															setSelectedUser(row.id);
 														}}
 													>
-														<ListItemIcon>
-															<EditSharp fontSize="small" />
-														</ListItemIcon>
-														<ListItemText>Edit</ListItemText>
-													</MenuItem>
-													<MenuItem
-														onClick={() => {
-															dispatch(deleteUser(row.id));
-															handleClose();
-															toast.success("User deleted successfully");
+														<GridMoreVertIcon />
+													</IconButton>
+													<Menu
+														id="basic-menu"
+														anchorEl={anchorEl}
+														open={open && row.id == selectedUser}
+														onClose={handleClose}
+														MenuListProps={{
+															"aria-labelledby": "basic-button",
 														}}
 													>
-														<ListItemIcon>
-															<DeleteOutline fontSize="small" />
-														</ListItemIcon>
-														<ListItemText>Delete</ListItemText>
-													</MenuItem>
-												</Menu>
-											</TableCell>
-										</TableRow>
-									))}
+														<MenuItem
+															onClick={() => {
+																router.push(
+																	`/user-management/create?id=${row.id}`
+																);
+																handleClose();
+															}}
+														>
+															<ListItemIcon>
+																<EditSharp fontSize="small" />
+															</ListItemIcon>
+															<ListItemText>Edit</ListItemText>
+														</MenuItem>
+														<MenuItem
+															onClick={() => {
+																dispatch(deleteUser(row.id));
+																handleClose();
+																toast.success("User deleted successfully");
+															}}
+														>
+															<ListItemIcon>
+																<DeleteOutline fontSize="small" />
+															</ListItemIcon>
+															<ListItemText>Delete</ListItemText>
+														</MenuItem>
+													</Menu>
+												</TableCell>
+											</TableRow>
+										);
+									})}
 							</TableBody>
 						)}
 					</Table>

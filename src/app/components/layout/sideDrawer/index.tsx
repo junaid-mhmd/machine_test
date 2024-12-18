@@ -90,7 +90,7 @@ const SideDrawer = (props: Props) => {
 			}}
 		>
 			<Box sx={{ p: 2 }} marginTop={"65px"}>
-				<Image src={"/assets/logo.png"} width={230} height={40} alt="logo" />
+				<Image src={"/assets/logo.png"} width={220} height={40} alt="logo" />
 			</Box>
 			<List sx={{ width: "100%", bgcolor: "background.paper" }} component="nav">
 				{navData.map((item: any, index: any) => (

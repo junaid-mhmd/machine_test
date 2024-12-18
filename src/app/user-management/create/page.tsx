@@ -51,7 +51,7 @@ const positions = [
 	"Defensive Midfielder",
 ];
 
-const statuses = ["Active", "Retired", "Suspended", "Injured"];
+const statuses = ["Active", "Retired"];
 
 const CreateUser = (props: Props) => {
 	const dispatch = useDispatch();
@@ -107,9 +107,9 @@ const CreateUser = (props: Props) => {
 		router.push("/user-management");
 	};
 
-	// Minimum valid date 5 years before today
+	// Minimum valid date 1 years before today
 	const minValidDate = new Date();
-	minValidDate.setFullYear(minValidDate.getFullYear() - 5);
+	minValidDate.setFullYear(minValidDate.getFullYear() - 1);
 
 	return (
 		<Stack spacing={4}>
@@ -345,7 +345,7 @@ const CreateUser = (props: Props) => {
 						/>
 					</Grid2>
 
-					<Grid2 size={12}>
+					<Grid2 size={12} display="flex" justifyContent="end">
 						<Button type="submit" variant="contained" color="primary">
 							{userId ? "Update" : "Submit"}
 						</Button>

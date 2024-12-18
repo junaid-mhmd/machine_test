@@ -29,18 +29,45 @@ export const applyFilters = (row: any, filters: any[]) => {
 		switch (operator) {
 			case "Equals":
 				return rowValue == value;
+
 			case "Not equals":
 				return rowValue != value;
+
 			case "Contains":
-				return rowValue.toLowerCase().includes(value.toLowerCase());
+				if (typeof rowValue === "string" && typeof value === "string") {
+					return rowValue.toLowerCase().includes(value.toLowerCase());
+				} else {
+					return false;
+				}
+
 			case "Starts with":
-				return rowValue.toLowerCase().startsWith(value.toLowerCase());
+				if (typeof rowValue === "string" && typeof value === "string") {
+					return rowValue.toLowerCase().startsWith(value.toLowerCase());
+				} else {
+					return false;
+				}
+
 			case "Ends with":
-				return rowValue.toLowerCase().endsWith(value.toLowerCase());
+				if (typeof rowValue === "string" && typeof value === "string") {
+					return rowValue.toLowerCase().endsWith(value.toLowerCase());
+				} else {
+					return false;
+				}
+
 			case "Greater than":
-				return rowValue > value;
+				if (!isNaN(Number(rowValue)) && !isNaN(Number(value))) {
+					return Number(rowValue) > Number(value);
+				} else {
+					return false;
+				}
+
 			case "Less than":
-				return rowValue < value;
+				if (!isNaN(Number(rowValue)) && !isNaN(Number(value))) {
+					return Number(rowValue) < Number(value);
+				} else {
+					return false;
+				}
+
 			default:
 				return true;
 		}
